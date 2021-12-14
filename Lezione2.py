@@ -10,9 +10,11 @@
 # Esercizio vero
         
     def sum_list ( lista ):
+        
         b = 0
 
         for item in lista:
+
             b = b + item
 
         print ( b )
