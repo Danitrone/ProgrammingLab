@@ -1,5 +1,5 @@
 
-# Prova 1
+# Prova 1 con sum
 
     a = range( 10 )
 
@@ -7,7 +7,7 @@
 
     print ( " Prova 1: {} \n ". format ( b ) )
 
-# Esercizio vero
+# Esercizio: scrivere una funzione per la somma di elementi di una lista
         
     def sum_list ( lista ):
         
