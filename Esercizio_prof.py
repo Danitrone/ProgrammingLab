@@ -29,7 +29,7 @@ class CSVFile:
             print('Errore, file non aperto o illeggibile')
             
             # Esco dalla funzione tornando "niente".
-            return None
+            return(None)
 
         else:
             # Inizializzo una lista vuota per salvare tutti i dati

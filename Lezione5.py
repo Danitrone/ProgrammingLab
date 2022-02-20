@@ -44,7 +44,7 @@ class CSVFile():
             print('Title:"{}"'. format(self.name))
 
             print(Lista)
-            rerturn (Lista)
+            return (Lista)
             file.close()
 
 

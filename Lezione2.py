@@ -1,23 +1,29 @@
 
 # Prova 1 con sum
 
-    a = range( 10 )
+a = range( 10 )
 
-    b = sum( a )
+b = sum( a )
 
-    print ( " Prova 1: {} \n ". format ( b ) )
+print ( " Prova 1: {} \n ". format ( b ) )
 
 # Esercizio: scrivere una funzione per la somma di elementi di una lista
         
-    def sum_list ( lista ):
+def sum_list ( lista ):
         
-        b = 0
+    b = 0
 
-        for item in lista:
+    for item in lista:
 
-            b = b + item
+        b = b + item
 
-        print ( b )
+    print ( b )
 
 
-    sum_list( lista = range ( 10 ) )
+sum_list( lista = range ( 10 ) )
+
+Lista=['mario','piero']
+
+enumerate(Lista)
+for element in Lista:
+    print(enumerate(element))

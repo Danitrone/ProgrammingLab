@@ -9,7 +9,7 @@ class Automobile():
         self.targa=targa
 
     # Uso il metodo interno str èper stampare i dati dell'automobile
-    def __str__(self):
+    def stampa(self):
 
         print('Casa: "{}"'.format(self.casa_automo))
         print('Modello: "{}"'.format(self.modello))
@@ -21,8 +21,7 @@ class Automobile():
 
     # definisco la funzione confronta prende in input l'oggetto stesso e un'altro oggetto sempre della stessa classe.
     def confronta(self,auto2):
-        if(
-            self.casa_automo==auto2.casa_automo
+        if(self.casa_automo==auto2.casa_automo
             and self.modello==auto2.modello 
             and self.numero_posti==auto2.numero_posti):
 
@@ -37,7 +36,10 @@ class Transformer(Automobile):
 
     
     
-    def __init__(self,nome,generazione,grado,reparto):
+    def __init__(self,nome,casa_automo, modello, numero_posti,targa,generazione,grado,reparto):
+        
+        super().__init__(casa_automo, modello, numero_posti,targa)
+
         self.nome=nome
         self.generazione=generazione
         self.grado=grado
@@ -57,23 +59,21 @@ auto1=Automobile('volvo','x4',3,475785)
 auto2=Automobile('volvo','x4',3,447836)
 
 # gestisco gli errori
-try:
-    print('Auto 1')
-    print(auto1) 
-except TypeError:
-    pass    
-try:
-    print('Auto 2')
-    print(auto2)       
-    
-except TypeError:
-    pass
-
+print('Auto1')
+auto1.stampa()
+print('Auto2')
+auto2.stampa()
 # Chiamo le funzioni
 
 auto1.confronta(auto2)
 
 # Istanzio il mio trasnsformer
-Babolbii=Transformer('Babolbii','quinta',2,'soldato')
+Babolbii=Transformer('Babolbii','volvo','x4',3,476368,4,5,'soldato')
 print(Babolbii.nome)
 Babolbii.scheda_militare()
+
+if isinstance(auto1,Automobile)==True:
+    print('si')
+
+if issubclass(Automobile,Transformer)==True:
+    print('si')
