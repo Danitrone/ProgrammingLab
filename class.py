@@ -135,7 +135,8 @@ file1=CSVFile('shampoo_sales.csv')
 data=file1.get_data(23,66)
 
 for element in data:
-    print(element)
+    line=element[0].split('-')
+    print(line)
 
 
 
