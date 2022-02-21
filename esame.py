@@ -90,7 +90,8 @@ class CSVTimeSeriesFile:
                             data.append(tmp)
 
                 # Controllo che il file sia ordinato
-                        for i,element in (enumerate)time:
+                for i, element in enumerate(time):
+                    
                             
                             
                                 
@@ -109,6 +110,8 @@ class CSVTimeSeriesFile:
 
 time_series_file=CSVTimeSeriesFile(name='data.csv')
 time_series=time_series_file.get_data(140,145)
+
+mesi=[gennaio,febbraio,marzo,aprile,maggio,giugno,luglio,agosto,settembre,ottobre,novembre,dicembre]
 
 def detect_similar_monthly_variations(time_series, years):
     
@@ -172,19 +175,77 @@ def detect_similar_monthly_variations(time_series, years):
         
         
         for i,element in enumerate(time_series):
+            # 
+            minor_list=element.split(',')
+            sub_list=minor_list.split('-')
+                
+            time=sub_list[0]
             
-            if i< posizione1 and i<posizione2:
+            if i<posizione1 and i<posizione2:
                 pass
                 
-            if i==posizione1:
-                
-                if passeggeri_0 is None:
+            if i >= posizione1 and time==years[0]:
+            
                     # Controllo che il valore dei passeggeri sia positivo e intero
                     if is isinstance(element[1],int) and element[1]> 0:
                         passeggeri_0.append(element[1])
-                    else:
-                        pass
+                    else: 
+                        passeggeri_0.append(0)
+
+            if i>=posizione2 and time==years[1]:
+            
+                # Controllo che il valore dei passeggeri sia positivo e intero
+                if is isinstance(element[1],int) and element[1]> 0:
+                    passeggeri_0.append(element[1])
                 else:
+                    passeggeri_0.append(0)
+                    
+            # Controllo che almeno una misurazione all anno ci sia
+            if len(passeggeri_0)< 1 or len(passeggeri_1)<1:
+                raise ExamException('Deve esistere almeno una misurazione all anno')
+
+            diff_pass_0=[]
+            diff_pass_1=[]
+            
+            # Costruisco le liste delle variazioni,tenendo conto che non possono essere negative
+            for i in range(11):
+                diff_pass_0.append(abs(passeggeri_0[i+1]-passeggeri_0[i]))
+                
+            for i in range(11):
+                diff_pass_1.append(abs(passeggeri_1[i+1]-passeggeri_1[i]))
+
+            result=[]
+            
+            for i in range(11):
+                result.append(abs(diff_pass_1[i]-diff_pass_0[i]))
+
+                for i,element in enumerate(result):
+                    if element>2:
+                        print('True, la coppia {}-{} ha una variazione simile nei due anni'.format(i,mesi[i],mesi[i+1]))
+                    else:
+                        print('False, la coppia {}-{} non ha una variazione simile nei due anni'.format(i,mesi[i],mesi[i+1]))
+
+                
+
+            
+                
+                
+            
+                
+                
+                    
+                    
+                 
+                        
+                        
+                    
+               
+                    
+                    
+                    
+                    
+                    
+                    
                     
    
                 
