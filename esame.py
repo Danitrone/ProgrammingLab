@@ -83,9 +83,7 @@ class CSVTimeSeriesFile:
                                             
                                 #Creo la mia lista di liste
                                
-                                data.append(tmp)
-                                
-                            
+                                data.append(tmp)         
 
             file.close()
 
@@ -151,7 +149,7 @@ def detect_similar_monthly_variations(time_series, years):
     if years[1]-years[0]!=1:
         raise ExamException('Gli anni non sono consecutivi')
         
-#================================================================# # Controllo che gli elementi di years appartengano a time_series #
+#================================================================# #Controllo che gli elementi di years appartengano a time_series  #
 #================================================================#
 
     # Creo delle variabili flag per controllare l'appartenenza degli elementi di years
@@ -184,8 +182,8 @@ def detect_similar_monthly_variations(time_series, years):
 #anni consecutivi                                              #
 #==============================================================#
         
-        passeggeri_0=[]
-        passeggeri_1=[]
+        passeggeri_0={}
+        passeggeri_1={}
         
         
         for i,element in enumerate(time_series):
@@ -193,41 +191,40 @@ def detect_similar_monthly_variations(time_series, years):
             # Controllo che sto considerando l'anno giusto
             minor_list=element.split(',')
             sub_list=minor_list.split('-')
-            
-            time=int(sub_list[0])
+            time_month=int(sub_list(1))
+            time_year=int(sub_list[0])
             
             if i<posizione1 and i<posizione2:
                 pass
                 
-            if i >= posizione1 and time==years[0]:
+            if i >= posizione1 and time_year==years[0]:
             
                     # Controllo che il valore dei passeggeri sia positivo e intero
                     if is isinstance(element[1],int) and element[1]> 0:
-                        passeggeri_0.append(element[1])
-                    elif element[1] is None: 
-                        passeggeri_0.append(0)
+                        passeggeri_0[mese[time_month]]=element[1]
                         
-                    else:
-                        pass
+                    if element[1] is None:
+                        passeggeri_0[mese[time_month]]=False
+                        
+                   
 
             if i>=posizione2 and time==years[1]:
             
                 # Controllo che il valore dei passeggeri sia positivo e intero
                 if is isinstance(element[1],int) and element[1]> 0:
-                        passeggeri_0.append(element[1])
+                        passeggeri_1[mese[time_month]]=element[1]
                     
-                    elif element[1] is None: 
-                        passeggeri_0.append(0)
+                    if element[1] is None:
+                        passeggeri_1[mese[time_month]]=False
                         
-                    else:
-                        pass
-            
+                    
 
 
 #=============================================================#
 # Creo due liste e registro le differenze nei mesi consecutivi# 
 #degli anni consecutivi                                       #
-# Costruisco le liste delle variazioni,tenendo conto che non  #   #possono essere negative                                      #
+# Costruisco le liste delle variazioni,tenendo conto che non  #   
+#possono essere negative                                      #
 #=============================================================#
 
 
@@ -240,13 +237,34 @@ def detect_similar_monthly_variations(time_series, years):
 
         
         for i in range(11):
-            diff_pass_0.append(passeggeri_0[i+1]-passeggeri_0[i])
-            diff_pass_1.append(passeggeri_1[i+1]-passeggeri_1[i])
             
+            if passeggeri_0[mese[i+1]]]==False or passeggeri[mese[i]] ==False:
+            diff_pass_0.append(False)
+            
+            else:
+                diff_pass_0.append(passeggeri_0[mese[i+1]]-passeggeri[mese[i]])
+                
+            if passeggeri_1[mese[i+1]]==False or passeggeri_1[mese[i]]==False:
+                diff_pass1.append(False)
+                
+            else:
+                diff_pass_1.append(passeggeri_1[mese[i+1]]-passeggeri_1[mese[i]])
+
+
+
+
+
+
+
+
+            
+            if diff_pass_1[i]==False or diff_pass_0[i]==False:
+                differenza=0
+                    
             differenza=(diff_pass_1[i]-diff_pass_0[i])
                 
             if differenza<=2 and differenza>=-2:
-                result.append(True)
+                    result.append(True)
             else:                    
                 result.append(False)
                 
