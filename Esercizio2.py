@@ -1,4 +1,4 @@
-
+from datetime import datetime
 
 class CSVFile():
 
@@ -9,7 +9,7 @@ class CSVFile():
         Lista=[]
         file=open(self.name,'r')
         
-        from datetime import datetime
+       
         
         for line in file:
             
@@ -17,14 +17,18 @@ class CSVFile():
              
             if(Listino[0] != 'Date'):
               
+                my_date=datetime.strptime(Listino[0],'%d-%m-%Y')
                 Lista.append(Listino[0])
-              
-
-        for item in Lista:
-            datetime.strptime(item,'%d-%m-%Y')
-
-        for item in Lista:
-            print(item)
+            
+        print(Lista)
+        
+        for element in Lista:
+    
+            if element!=datetime.strptime(element,'%d-%m-%Y'):
+                print('False')
+            else:
+                print('True')
+        
         
 
 file1=CSVFile('shampoo_sales.csv')
