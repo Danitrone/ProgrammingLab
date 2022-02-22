@@ -251,17 +251,11 @@ def detect_similar_monthly_variations(time_series, years):
                 diff_pass_1.append(passeggeri_1[mese[i+1]]-passeggeri_1[mese[i]])
 
 
-
-
-
-
-
-
             
             if diff_pass_1[i]==False or diff_pass_0[i]==False:
                 differenza=0
-                    
-            differenza=(diff_pass_1[i]-diff_pass_0[i])
+            else:       
+                differenza=(diff_pass_1[i]-diff_pass_0[i])
                 
             if differenza<=2 and differenza>=-2:
                     result.append(True)
