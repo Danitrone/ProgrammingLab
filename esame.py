@@ -26,7 +26,7 @@ class CSVTimeSeriesFile:
         self.can_read=True
         
     #Modulo get_data
-    def get_data(self,start=None,end=None):
+    def get_data(self):
         
         # Controllo che il file esista
         try:
@@ -43,69 +43,49 @@ class CSVTimeSeriesFile:
 
         #Se il file esiste
         else:
-            
-            if start==None and end==None:
-                
                  data=[]
                  time=[]
             # apro il file in modalità lettura
                  file=open(self.name,'r')
     
                 # ciclo sul file
-                 for i,line in enumerate(file):
+                 for line in file:
                         
                         tmp=line.split(',')
                      
                         # Gestisco il caso della prima riga
                         if(tmp[0]!= 'date'):
-    
-                            #Elimino gli spazi \n
-                            tmp[-1]=tmp[-1].strip()
+                            
                             #Controllo che tmp[0] sia una data
+                            controllo=True
+                            
                             try:
-                                time_stamp=datetime.datetime('%Y-%m')
-                            except Exception as e:
-                                print(e)
+                                time_stamp=datetime.strptime(tmp[0],'%Y-%m')
+                            except IndexError:
+                                controllo=False
                                 
-                            # Creo una lista di liste annidate
-                            data.append((tmp))
-            else:
-                if start > end:
-                    raise ExamException('Start deve essere minore di end')
-                if start<=0 or end <=0:
-                    raise ExamException('I parametri di confine non possono essere minori di zero')
-                if end>145 or start>145:
-                    raise ExamException('I parametri di confine non possono superare il numero di righe del file')
-                    
-            # preparo le liste vuote
-                data=[]
-                time=[]
-                
-                # apro il file in modalità lettura
-                file=open(self.name,'r')
+                            if not controllo:
+                                pass
+                                
+                            else:
+                                #Elimino gli spazi \n
+                                tmp[-1]=tmp[-1].strip()
     
-                # ciclo sul file
-                for i,line in enumerate(file,1):
-    
-                    if i < start:
-                        pass
-                        
-                    if i >= start and i <= end:
-                        
-                        #splitto ogni riga alla virgola
-                        tmp=line.split(',')
-                        
-                        if tmp[0]!='date':
+                                if time is None:
+                                    time.append((time_stamp))
+                                else:
+                                    for element in time:
+                                        if time_stamp==element:
+                                            raise ExamException('Il time stamp {} è un doppio. '.format(time_stamp))
+                                        elif time_stamp< element:
+                                            raise ExamException('Le date non sono ordinate')
+                                    time.append(time_stamp)
+                                            
+                                #Creo la mia lista di liste
+                               
+                                data.append(tmp)
+                                
                             
-                            #Elimino gli spazi \n
-                            tmp[-1]=tmp[-1].strip()
-                            
-                            # Creo una lista di liste annidate
-                            data.append((tmp))
-                            
-        ####################### Manca il controllo sulle timestamp ##################
-                            
-                # Chiudo il file e ritorno data 
 
             file.close()
 
@@ -114,6 +94,7 @@ class CSVTimeSeriesFile:
 time_series_file=CSVTimeSeriesFile(name='data.csv')
 time_series=time_series_file.get_data(140,145)
 
+# lista con i mesi dell'anno
 mesi=[gennaio,febbraio,marzo,aprile,maggio,giugno,luglio,agosto,settembre,ottobre,novembre,dicembre]
 
 
