@@ -85,15 +85,15 @@ class CSVTimeSeriesFile:
                                
                                 data.append(tmp)         
 
-            file.close()
+        file.close()
 
-            return(data)
+        return(data)
 
 time_series_file=CSVTimeSeriesFile(name='data.csv')
-time_series=time_series_file.get_data(140,145)
+time_series=time_series_file.get_data()
 
 # lista con i mesi dell'anno
-mesi=[gennaio,febbraio,marzo,aprile,maggio,giugno,luglio,agosto,settembre,ottobre,novembre,dicembre]
+mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre']
 
 
 #=========================================================#
@@ -157,10 +157,10 @@ def detect_similar_monthly_variations(time_series, years):
     check1=False
     check2=False
     
-    for i,lista in enumerate(time_series):
+    for i,item in enumerate(time_series):
         
-        list_minor=lista.split(',')
-        sub_list=list_minor[0].split('-')
+        
+        sub_list=item[0].split('-')
         
         if int(sub_list[0])==years[0]:
             check1=True
@@ -189,9 +189,9 @@ def detect_similar_monthly_variations(time_series, years):
         for i,element in enumerate(time_series):
             
             # Controllo che sto considerando l'anno giusto
-            minor_list=element.split(',')
-            sub_list=minor_list.split('-')
-            time_month=int(sub_list(1))
+        
+            sub_list=element[0].split('-')
+            time_month=int(sub_list[1])
             time_year=int(sub_list[0])
             
             if i<posizione1 and i<posizione2:
@@ -200,22 +200,22 @@ def detect_similar_monthly_variations(time_series, years):
             if i >= posizione1 and time_year==years[0]:
             
                     # Controllo che il valore dei passeggeri sia positivo e intero
-                    if is isinstance(element[1],int) and element[1]> 0:
-                        passeggeri_0[mese[time_month]]=element[1]
+                    if isinstance(element[1],int) and element[1]> 0:
+                        passeggeri_0[mesi[time_month-1]]=element[1]
                         
                     if element[1] is None:
-                        passeggeri_0[mese[time_month]]=False
+                        passeggeri_0[mesi[time_month-1]]=False
                         
                    
 
-            if i>=posizione2 and time==years[1]:
+            if i>=posizione2 and time_year==years[1]:
             
                 # Controllo che il valore dei passeggeri sia positivo e intero
-                if is isinstance(element[1],int) and element[1]> 0:
-                        passeggeri_1[mese[time_month]]=element[1]
+                if isinstance(element[1],int) and element[1]> 0:
+                        passeggeri_1[mesi[time_month-1]]=element[1]
                     
-                    if element[1] is None:
-                        passeggeri_1[mese[time_month]]=False
+                if element[1] is None:
+                    passeggeri_1[mesi[time_month-1]]=False
                         
                     
 
@@ -238,30 +238,38 @@ def detect_similar_monthly_variations(time_series, years):
         
         for i in range(11):
             
-            if passeggeri_0[mese[i+1]]]==False or passeggeri[mese[i]] ==False:
-            diff_pass_0.append(False)
-            
+            if mesi[i+1] in passeggeri_0 and mesi[i] in passeggeri_0:
+               
+                diff_pass_0.append(passeggeri_0[mesi[i+1]]-passeggeri_0[mesi[i]])
+               
             else:
-                diff_pass_0.append(passeggeri_0[mese[i+1]]-passeggeri[mese[i]])
-                
-            if passeggeri_1[mese[i+1]]==False or passeggeri_1[mese[i]]==False:
-                diff_pass1.append(False)
+               diff_pass_0.append(False)
+               
+            if mesi[i+1] in passeggeri_1 and mesi[i] in passeggeri_1:
+                diff_pass_1.append(passeggeri_1[mesi[i+1]]-passeggeri_1[mesi[i]])
                 
             else:
-                diff_pass_1.append(passeggeri_1[mese[i+1]]-passeggeri_1[mese[i]])
+                diff_pass_1.append(False)
+           
 
-
-            
             if diff_pass_1[i]==False or diff_pass_0[i]==False:
-                differenza=0
-            else:       
+                differenza=False
+            else:
                 differenza=(diff_pass_1[i]-diff_pass_0[i])
-                
-            if differenza<=2 and differenza>=-2:
-                    result.append(True)
-            else:                    
-                result.append(False)
-                
+
+           
+             
+            if differenza<=2 and differenza>=-2 :
+                result.append(True)
+            else:
+                if differenza==False:
+                    result.append(False)
+                elif differenza>2 and differenza<-2:
+                    result.append(False)
+                    
+
+            
+        print(result)
         return(result)
          
         
@@ -270,16 +278,7 @@ def detect_similar_monthly_variations(time_series, years):
         raise ExamException('Controllo di appartenenza elementi di years fallito')
 
 
-        
+prova1=detect_similar_monthly_variations(time_series,[1949,1950])
 #=============#
 # Test driver #  
 #=============#
-        
-# La funzione deve tornare una lista
-        prova1=detect_similar_monthly_variations(time_series,years)
-        
-if not isinstance(prova1,list):
-    raise ExamException('La funzione non torna una lista')
-
-if len(prova1)!=11:
-    raise ExamException('La funzione deve tornare una lista di 11 elementi, non di {}'.format(len(prova1)))
