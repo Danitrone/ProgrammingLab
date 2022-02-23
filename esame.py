@@ -203,14 +203,35 @@ def detect_similar_monthly_variations(time_series, years):
         print(passeggeri0)
         print(passeggeri1)
 
+        differenza=0
+        result=[]
+        
+        for i in range(11):
+            prova=1
+            try:
+                differenza1=passeggeri0[mesi[i+1]]-passeggeri0[mesi[i]]
+                differenza2=passeggeri1[mesi[i+1]]-passeggeri1[mesi[i]]
+                differenza=abs(differenza1-differenza2)
+            except KeyError:
+                prova=prova*0
+            except IndexError: 
+                prova=prova*0
+                
+           
 
-        diff=
+            if differenza<=2 and prova==1:
+                result.append(True)
+            elif differenza>2 or prova==0:
+                result.append(False)
 
         
        
-            
-                    
-
+        print(result)
+        
+        if len(result)==11:
+            return(result)
+        else:
+            raise ExamException('La lista-output deve essere lunga 11')
         
     else:
         # Se uno dei due anni non appartiene a time_series
