@@ -106,6 +106,7 @@ class CSVTimeSeriesFile:
 
                                 
         # cernisco la lista data, togliendo le liste che presentano valori che non mi interessano
+                                
         for element in data:
             
             try:
@@ -202,13 +203,8 @@ def detect_similar_monthly_variations(time_series, years):
         if int(sub_list[0])==years[0]:
             check1=True
             
-            
-
-            
         if int(sub_list[0])==years[1]:
             check2=True
-        
-
     
     if check1 and check2:
         
@@ -267,10 +263,11 @@ def detect_similar_monthly_variations(time_series, years):
             prova=1
             
             try:
+                #Faccio la differenza tra i mesi consecutivi del primo anno e del secondo, poi le confronto
                 differenza1=passeggeri0[mesi[i+1]]-passeggeri0[mesi[i]]
                 differenza2=passeggeri1[mesi[i+1]]-passeggeri1[mesi[i]]
                 differenza=abs(differenza1-differenza2)
-                
+                # 
             except KeyError:
                 prova=prova*0
                 
@@ -299,6 +296,7 @@ def detect_similar_monthly_variations(time_series, years):
         return(result)
         
     else:
+        
         # Se uno dei due anni non appartiene a time_series
         raise ExamException('Controllo di appartenenza elementi di years fallito')
 
