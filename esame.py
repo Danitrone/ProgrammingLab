@@ -45,6 +45,7 @@ class CSVTimeSeriesFile:
         else:
                  data=[]
                  time=[]
+                 new=[]
             # apro il file in modalità lettura
                  file=open(self.name,'r')
     
@@ -61,7 +62,7 @@ class CSVTimeSeriesFile:
                             
                             try:
                                 time_stamp=datetime.strptime(tmp[0],'%Y-%m')
-                            except IndexError:
+                            except Exception:
                                 controllo=False
                                 
                             if not controllo:
@@ -70,10 +71,12 @@ class CSVTimeSeriesFile:
                             else:
                                 #Elimino gli spazi \n
                                 tmp[-1]=tmp[-1].strip()
-    
+                                
+                                # Controllo l'ordine delle timestamp e che non ci siano doppioni
                                 if time is None:
                                     time.append((time_stamp))
                                 else:
+                                    
                                     for element in time:
                                         if time_stamp==element:
                                             raise ExamException('Il time stamp {} è un doppio. '.format(time_stamp))
@@ -81,19 +84,38 @@ class CSVTimeSeriesFile:
                                             raise ExamException('Le date non sono ordinate')
                                     time.append(time_stamp)
                                             
+                                
                                 #Creo la mia lista di liste
-                               
-                                data.append(tmp)         
+                                data.append(tmp)        
+
+        for element in data:
+            
+            try:
+                value=int(element[1])
+            except Exception:
+                continue
+                
+            if value>0:
+                Lista=[]
+                Lista.append(element[0])
+                Lista.append(value)
+                new.append(Lista)
+                
+            else:
+                continue
+                
+         
+                
 
         file.close()
 
-        return(data)
+        return(new)
 
 time_series_file=CSVTimeSeriesFile(name='data.csv')
 time_series=time_series_file.get_data()
 
 # lista con i mesi dell'anno
-mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre']
+
 
 
 #=========================================================#
@@ -128,7 +150,7 @@ def detect_similar_monthly_variations(time_series, years):
             int(years[1])
                 
         except Exception:
-            raise ExamException('Gli anni devono essere di tipo intero')
+            raise ExamException('Impossibile riconvertire gli anni in tipo intero')
             
           
         
@@ -138,7 +160,7 @@ def detect_similar_monthly_variations(time_series, years):
             try:
                 int(years[1])
             except Exception as e:   
-                raise ExamException('Gli anni devono essere di tipo intero')
+                raise ExamException('Impossibile riconvertire gli anni in tipo intero')
         
     if years[0]<=0 or years[1]<=0:
             raise ExamException('Gli anni da valutare devono essere positivi')
@@ -161,8 +183,8 @@ def detect_similar_monthly_variations(time_series, years):
         if int(sub_list[0])==years[0]:
             check1=True
             
-            posizione1=i+1
-            print('Posizione1:{}'.format(posizione1))
+            
+
             
         if int(sub_list[0])==years[1]:
             check2=True
@@ -172,33 +194,32 @@ def detect_similar_monthly_variations(time_series, years):
     if check1 and check2:
         
         # Ho verificato che gli anni sono presenti all'interno di time_series
+        # Creo una lista con tutti i mesi dell anno con gennaio all'indice 0ù
         
-        # Creo due dizionari
+        mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre']
+        
+        # Creo due dizionari per legare il numero di passeggeri al corrispettivo mese
         
         passeggeri0={}
         passeggeri1={}
 
-        for i,item in enumerate(time_series,0):
-            
-            if i>=posizione1-12:
+        for item in time_series:
+                
                 sub_list=item[0].split('-')
                 time_year=int(sub_list[0])
                 month=int(sub_list[1])
-                
-                try:
-                    value=int(item[1])
-                except Exception:
-                    continue
                     
                 if time_year<=years[1]:
-                    if time_year==years[0] and value>0:
+                    
+                    
+                    if time_year==years[0]:
                        
                             mese=mesi[month-1]
-                            passeggeri0[mese]=value
+                            passeggeri0[mese]=item[1]
                         
-                    if time_year==years[1] and value>0:
+                    if time_year==years[1]:
                             mese=mesi[month-1]
-                            passeggeri1[mese]=value
+                            passeggeri1[mese]=item[1]
                         
         print(passeggeri0)
         print(passeggeri1)
@@ -207,11 +228,14 @@ def detect_similar_monthly_variations(time_series, years):
         result=[]
         
         for i in range(11):
+            
             prova=1
+            
             try:
                 differenza1=passeggeri0[mesi[i+1]]-passeggeri0[mesi[i]]
                 differenza2=passeggeri1[mesi[i+1]]-passeggeri1[mesi[i]]
                 differenza=abs(differenza1-differenza2)
+                
             except KeyError:
                 prova=prova*0
             except IndexError: 
@@ -221,6 +245,7 @@ def detect_similar_monthly_variations(time_series, years):
 
             if differenza<=2 and prova==1:
                 result.append(True)
+                
             elif differenza>2 or prova==0:
                 result.append(False)
 
@@ -230,6 +255,7 @@ def detect_similar_monthly_variations(time_series, years):
         
         if len(result)==11:
             return(result)
+            
         else:
             raise ExamException('La lista-output deve essere lunga 11')
         
@@ -239,6 +265,7 @@ def detect_similar_monthly_variations(time_series, years):
 
 
 prova1=detect_similar_monthly_variations(time_series,[1949,1950])
+
 #=============#
 # Test driver #  
 #=============#
