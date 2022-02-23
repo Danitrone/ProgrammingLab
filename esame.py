@@ -112,7 +112,7 @@ class CSVTimeSeriesFile:
             try:
                 value=int(element[1])
                 
-            except Exception:
+            except ValueError:
                 continue
                 
             if value>0:
@@ -135,7 +135,7 @@ class CSVTimeSeriesFile:
 time_series_file=CSVTimeSeriesFile(name='data.csv')
 time_series=time_series_file.get_data()
 
-
+print(time_series)
 #=========================================================#
 #Definisco la funzione 'detect_similar_monthly_variations'#
 #=========================================================#
@@ -269,6 +269,9 @@ def detect_similar_monthly_variations(time_series, years):
                 differenza=abs(differenza1-differenza2)
                 # 
             except KeyError:
+                prova=prova*0
+                
+            except IndexError:
                 prova=prova*0
                 
            
