@@ -108,6 +108,7 @@ class CSVTimeSeriesFile():
         if not final_list:
             raise ExamException('Errore: il file è vuoto! ')
 
+            print(final_list)
         # Ritorno la lista finale
         return  final_list
 
