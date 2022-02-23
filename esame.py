@@ -100,7 +100,6 @@ mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto',
 #Definisco la funzione 'detect_similar_monthly_variations'#
 #=========================================================#
 
-
 def detect_similar_monthly_variations(time_series, years):
     
 #==============================#
@@ -124,24 +123,22 @@ def detect_similar_monthly_variations(time_series, years):
         
     if not isinstance(years[0],int):
         # Provo a convertire years_0 in formato intero
-        if type(years[0])==str:
-            try:
-                int(years[1])
+       
+        try:
+            int(years[1])
                 
-            except Exception as e:
-                print(e)
-        else:         
+        except Exception:
             raise ExamException('Gli anni devono essere di tipo intero')
             
+          
+        
     if not isinstance(years[1],int):
         # Provo a convertire years_1 in formato intero
         if type(years[1])==str:
             try:
                 int(years[1])
-            except Exception as e:
-                print(e)
-        else:         
-            raise ExamException('Gli anni devono essere di tipo intero')
+            except Exception as e:   
+                raise ExamException('Gli anni devono essere di tipo intero')
         
     if years[0]<=0 or years[1]<=0:
             raise ExamException('Gli anni da valutare devono essere positivi')
@@ -159,119 +156,61 @@ def detect_similar_monthly_variations(time_series, years):
     
     for i,item in enumerate(time_series):
         
-        
         sub_list=item[0].split('-')
         
         if int(sub_list[0])==years[0]:
             check1=True
             
-            # Salvo la posizione del primo  elemento contenente years[0]
-            posizione1=i
+            posizione1=i+1
+            print('Posizione1:{}'.format(posizione1))
             
         if int(sub_list[0])==years[1]:
             check2=True
-            
-            # Salvo la posizione del primo elemento contenente years[1]
-            posizione2=i
         
+
+    
     if check1 and check2:
-        # se entrambi gli anni appartengono a time_series 
         
-#==============================================================#
-#Creo due liste, per registrare il numero di oasseggeri nei due# 
-#anni consecutivi                                              #
-#==============================================================#
+        # Ho verificato che gli anni sono presenti all'interno di time_series
         
-        passeggeri_0={}
-        passeggeri_1={}
+        # Creo due dizionari
         
-        
-        for i,element in enumerate(time_series):
+        passeggeri0={}
+        passeggeri1={}
+
+        for i,item in enumerate(time_series,0):
             
-            # Controllo che sto considerando l'anno giusto
-        
-            sub_list=element[0].split('-')
-            time_month=int(sub_list[1])
-            time_year=int(sub_list[0])
-            
-            if i<posizione1 and i<posizione2:
-                pass
+            if i>=posizione1-12:
+                sub_list=item[0].split('-')
+                time_year=int(sub_list[0])
+                month=int(sub_list[1])
                 
-            if i >= posizione1 and time_year==years[0]:
-            
-                    # Controllo che il valore dei passeggeri sia positivo e intero
-                    if isinstance(element[1],int) and element[1]> 0:
-                        passeggeri_0[mesi[time_month-1]]=element[1]
-                        
-                    if element[1] is None:
-                        passeggeri_0[mesi[time_month-1]]=False
-                        
-                   
-
-            if i>=posizione2 and time_year==years[1]:
-            
-                # Controllo che il valore dei passeggeri sia positivo e intero
-                if isinstance(element[1],int) and element[1]> 0:
-                        passeggeri_1[mesi[time_month-1]]=element[1]
+                try:
+                    value=int(item[1])
+                except Exception:
+                    continue
                     
-                if element[1] is None:
-                    passeggeri_1[mesi[time_month-1]]=False
+                if time_year<=years[1]:
+                    if time_year==years[0] and value>0:
+                       
+                            mese=mesi[month-1]
+                            passeggeri0[mese]=value
                         
-                    
+                    if time_year==years[1] and value>0:
+                            mese=mesi[month-1]
+                            passeggeri1[mese]=value
+                        
+        print(passeggeri0)
+        print(passeggeri1)
 
 
-#=============================================================#
-# Creo due liste e registro le differenze nei mesi consecutivi# 
-#degli anni consecutivi                                       #
-# Costruisco le liste delle variazioni,tenendo conto che non  #   
-#possono essere negative                                      #
-#=============================================================#
-
-
+        diff=
 
         
-        diff_pass_0=[]
-        diff_pass_1=[]
-        result=[]
-          
-
-        
-        for i in range(11):
+       
             
-            if mesi[i+1] in passeggeri_0 and mesi[i] in passeggeri_0:
-               
-                diff_pass_0.append(passeggeri_0[mesi[i+1]]-passeggeri_0[mesi[i]])
-               
-            else:
-               diff_pass_0.append(False)
-               
-            if mesi[i+1] in passeggeri_1 and mesi[i] in passeggeri_1:
-                diff_pass_1.append(passeggeri_1[mesi[i+1]]-passeggeri_1[mesi[i]])
-                
-            else:
-                diff_pass_1.append(False)
-           
-
-            if diff_pass_1[i]==False or diff_pass_0[i]==False:
-                differenza=False
-            else:
-                differenza=(diff_pass_1[i]-diff_pass_0[i])
-
-           
-             
-            if differenza<=2 and differenza>=-2 :
-                result.append(True)
-            else:
-                if differenza==False:
-                    result.append(False)
-                elif differenza>2 and differenza<-2:
-                    result.append(False)
                     
 
-            
-        print(result)
-        return(result)
-         
         
     else:
         # Se uno dei due anni non appartiene a time_series
