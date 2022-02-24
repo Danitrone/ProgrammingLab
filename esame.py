@@ -134,10 +134,6 @@ class CSVTimeSeriesFile:
             return(new)
 
 
-# Istanzio l'oggetto e chiamo la sua funzione
-time_series_file=CSVTimeSeriesFile(name='data.csv')
-time_series=time_series_file.get_data()
-
 
 #=========================================================#
 #Definisco la funzione 'detect_similar_monthly_variations'#
