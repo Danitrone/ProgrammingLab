@@ -90,10 +90,10 @@ class CSVTimeSeriesFile:
                                 else:
                                     
                                     for element in time:
-                                        
+                                        #Se la data è ripetuta
                                         if time_stamp==element:
-                                            
                                             raise ExamException('Il time stamp {} è un doppio. '.format(time_stamp))
+                                        #Se la data è disordinata
                                         elif time_stamp<time[-1]:
                                             raise ExamException('La data {} non è ordinata'.format(time_stamp))
                                             
@@ -105,7 +105,7 @@ class CSVTimeSeriesFile:
                                 data.append(tmp)   
 
                                 
-        # cernisco la lista data, togliendo le liste che presentano valori che non mi interessano
+        # Cernisco la lista 'data', togliendo le liste che presentano valori che non mi interessano
                                 
         for element in data:
             
